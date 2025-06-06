@@ -1,0 +1,17 @@
+{% extends "layout.html" %}
+{% block title %}Accueil{% endblock %}
+{% block content %}
+
+<div class="text-center mt-5">
+    <h1 class="mb-4">Bienvenue dans l'application Cahier de Texte</h1>
+    <p class="lead mb-4">
+        Cette application permet de gérer facilement les présences, les séances, les validations pédagogiques
+        et les assignations de cours pour les enseignants, responsables et chefs de filière.
+    </p>
+
+    <a href="{{ url_for('auth.login') }}" class="btn btn-primary btn-lg shadow px-5 py-3">
+        Commencer maintenant
+    </a>
+</div>
+
+{% endblock %}

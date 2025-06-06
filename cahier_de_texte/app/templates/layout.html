@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Cahier de texte{% endblock %}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary px-4 py-3 shadow">
+
+    <!-- Image 1 à gauche -->
+    <a class="navbar-brand d-flex align-items-center" href="{{ url_for('main.index') }}">
+        <img src="{{ url_for('static', filename='img/logo.jpg') }}" alt="Logo Institution" width="40" height="40" class="me-2">
+        Cahier de texte
+    </a>
+
+    <!-- Menu déroulant à droite -->
+    {% if current_user.is_authenticated %}
+    <div class="collapse navbar-collapse justify-content-end">
+        <ul class="navbar-nav">
+            {% if current_user.role == 'enseignant' %}
+                <li class="nav-item"><a class="nav-link" href="{{ url_for('enseignant.dashboard') }}">Mes cours</a></li>
+            {% elif current_user.role == 'responsable' %}
+                <li class="nav-item"><a class="nav-link" href="{{ url_for('responsable.dashboard') }}">Séances</a></li>
+            {% elif current_user.role == 'chef' %}
+                <li class="nav-item"><a class="nav-link" href="{{ url_for('chef.dashboard') }}">Dashboard Chef</a></li>
+            {% endif %}
+            <li class="nav-item"><a class="nav-link" href="{{ url_for('auth.logout') }}">Déconnexion</a></li>
+        </ul>
+    </div>
+    {% endif %}
+
+    <!-- Image 2 à droite -->
+    <div class="d-flex align-items-center">
+        <img src="{{ url_for('static', filename='img/cahier.png') }}" alt="Cahier" width="40" height="40" class="ms-3">
+    </div>
+
+</nav>
+
+
+<div class="container mt-4">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    {% block content %}{% endblock %}
+</div>
+
+<!-- FOOTER -->
+<footer class="bg-primary text-white text-center py-3 fixed-bottom shadow-sm">
+    <small>&copy; 2025 Cahier de Texte - Tous droits réservés</small>
+</footer>
+
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

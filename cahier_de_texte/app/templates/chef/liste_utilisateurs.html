@@ -1,0 +1,36 @@
+{% extends "layout.html" %}
+{% block title %}Gestion des utilisateurs{% endblock %}
+{% block content %}
+
+<div class="container">
+    <h2 class="mb-4 text-center">Liste des utilisateurs</h2>
+
+    <table class="table table-bordered table-striped">
+        <thead class="table-light">
+            <tr>
+                <th>#</th>
+                <th>Nom</th>
+                <th>Email</th>
+                <th>Rôle</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for user in utilisateurs %}
+            <tr>
+                <td>{{ loop.index }}</td>
+                <td>{{ user.nom }}</td>
+                <td>{{ user.email }}</td>
+                <td>{{ user.role }}</td>
+                <td>
+                    <form method="POST" action="{{ url_for('chef.supprimer_utilisateur', user_id=user.id) }}" onsubmit="return confirm('Confirmer la suppression de {{ user.nom }} ?')">
+                        <button type="submit" class="btn btn-sm btn-danger">🗑 Supprimer</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% endblock %}

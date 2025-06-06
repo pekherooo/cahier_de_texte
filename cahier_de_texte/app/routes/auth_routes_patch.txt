@@ -1,0 +1,20 @@
+
+@auth.route('/complete_registration/<token>', methods=['GET', 'POST'])
+def complete_registration(token):
+    invitation = Invitation.query.filter_by(token=token).first()
+    if not invitation or invitation.date_expiration < datetime.utcnow():
+        flash("Lien invalide ou expiré", "danger")
+        return redirect(url_for('auth.login'))
+
+    if request.method == 'POST':
+        password = request.form['password']
+        hashed = generate_password_hash(password)
+        user = User(nom=invitation.nom, email=invitation.email,
+                    mot_de_passe=hashed, role=invitation.role)
+        db.session.add(user)
+        db.session.delete(invitation)
+        db.session.commit()
+        flash("Inscription complétée. Vous pouvez vous connecter.", "success")
+        return redirect(url_for('auth.login'))
+
+    return render_template('auth/complete_registration.html', invitation=invitation)

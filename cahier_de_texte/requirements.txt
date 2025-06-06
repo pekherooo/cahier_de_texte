@@ -1,0 +1,10 @@
+flask
+flask-login
+flask-wtf
+flask-sqlalchemy
+flask-mail
+email-validator
+python-dotenv
+openpyxl
+gunicorn
+Flask-Migrate

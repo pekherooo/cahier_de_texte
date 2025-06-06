@@ -1,0 +1,25 @@
+{% extends "layout.html" %}
+{% block title %}Enseignant - Mes cours{% endblock %}
+{% block content %}
+
+<div class="container">
+    <h2 class="mb-4 text-center">Mes cours</h2>
+
+    <div class="row">
+        {% for c in cours %}
+        <div class="col-md-4 mb-3">
+            <div class="card shadow-sm p-3">
+                <h5 class="card-title text-center">{{ c.nom }}</h5>
+                <p class="card-text text-center text-muted">Volume : {{ c.volume_horaire }}h</p>
+                <div class="d-grid">
+                    <a class="btn btn-primary" href="{{ url_for('enseignant.cours_detail', cours_id=c.id) }}">
+                        📖 Voir / Ajouter des séances
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+{% endblock %}

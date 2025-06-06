@@ -1,0 +1,9 @@
+{% extends "layout.html" %}
+{% block title %}Invitation expirée{% endblock %}
+{% block content %}
+<div class="text-center mt-5">
+    <h2 class="text-danger">Lien expiré</h2>
+    <p>Cette invitation n’est plus valide. Merci de demander une nouvelle invitation.</p>
+    <a class="btn btn-primary mt-3" href="{{ url_for('auth.login') }}">Retour à la connexion</a>
+</div>
+{% endblock %}

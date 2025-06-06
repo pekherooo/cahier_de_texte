@@ -1,0 +1,59 @@
+{% extends "layout.html" %}
+{% block title %}Suivi pédagogique{% endblock %}
+{% block content %}
+
+<div class="container">
+    <h2 class="mb-4 text-center">Suivi pédagogique des enseignants</h2>
+
+    <form method="POST" class="mb-4">
+        <div class="mb-3">
+            <label class="form-label">Choisir un enseignant :</label>
+            <select name="enseignant_id" class="form-select" required>
+                {% for e in enseignants %}
+                    <option value="{{ e.id }}" {% if e.id|string == enseignant_id %}selected{% endif %}>{{ e.nom }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="d-grid">
+            <button type="submit" class="btn btn-primary">Afficher les cours</button>
+        </div>
+    </form>
+
+    {% if cours %}
+        {% for c in cours %}
+            <h4 class="mt-4 text-primary">{{ c.nom }} (Prévu : {{ c.volume_horaire }} h)</h4>
+            <table class="table table-striped table-bordered">
+                <thead class="table-light">
+                    <tr>
+                        <th>#</th>
+                        <th>Date</th>
+                        <th>Début</th>
+                        <th>Fin</th>
+                        <th>Durée</th>
+                        <th>Contenu</th>
+                        <th>Validée</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for s in c.seances %}
+                    <tr>
+                        <td>{{ loop.index }}</td>
+                        <td>{{ s.date }}</td>
+                        <td>{{ s.heure_debut }}</td>
+                        <td>{{ s.heure_fin }}</td>
+                        <td>{{ (s.duree.total_seconds() / 3600)|round(2) }} h</td>
+                        <td>{{ s.contenu }}</td>
+                        <td>
+                            <span class="badge {% if s.validee %}bg-success{% else %}bg-warning text-dark{% endif %}">
+                                {{ 'Oui' if s.validee else 'Non' }}
+                            </span>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% endfor %}
+    {% endif %}
+</div>
+
+{% endblock %}
