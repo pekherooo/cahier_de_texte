@@ -6,11 +6,11 @@
     <h2 class="mb-4 text-center">Tableau de bord du chef de filière</h2>
 
     <div class="mb-4 d-grid gap-2">
-        <a class="btn btn-primary" href="{{ url_for('chef.inviter_utilisateur') }}">Inviter un utilisateur</a>
-        <a class="btn btn-info" href="{{ url_for('chef.assigner_cours') }}">Assigner des cours</a>
-        <a class="btn btn-warning" href="{{ url_for('chef.liste_utilisateurs') }}">Gérer les utilisateurs</a>
-        <a class="btn btn-secondary" href="{{ url_for('chef.suivi_enseignant') }}">Suivi pédagogique</a>
-        <a class="btn btn-dark" href="{{ url_for('chef.liste_invitations') }}">Gérer les invitations</a>
+        <a class="btn btn-primary btn-lg w-100" href="{{ url_for('chef.inviter_utilisateur') }}">Inviter un utilisateur</a>
+        <a href="{{ url_for('chef.creer_cours') }}" class="btn btn-success btn-lg w-100">Créer et assigner un cours</a>
+        <a class="btn btn-warning btn-lg w-100" href="{{ url_for('chef.liste_utilisateurs') }}">Gérer les utilisateurs</a>
+        <a class="btn btn-secondary btn-lg w-100" href="{{ url_for('chef.suivi_enseignant') }}">Suivi pédagogique</a>
+        <a class="btn btn-dark btn-lg w-100" href="{{ url_for('chef.liste_invitations') }}">Gérer les invitations</a>
 
     </div>
 </div>

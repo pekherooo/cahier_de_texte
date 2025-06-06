@@ -2,35 +2,37 @@
 {% block title %}Inviter un utilisateur{% endblock %}
 {% block content %}
 
-<div class="row justify-content-center">
-    <div class="col-md-6">
-        <h2 class="mb-4 text-center">Inviter un utilisateur</h2>
+<div class="container mt-4 px-3">
+    <div class="row justify-content-center">
+        <div class="col-md-6 col-12">
+            <h2 class="mb-4 text-center">Inviter un utilisateur</h2>
+            <form method="POST">
+                <div class="mb-3">
+                    <label class="form-label">Nom</label>
+                    <input type="text" name="nom" class="form-control" required>
+                </div>
 
-        <form method="POST">
-            <div class="mb-3">
-                <label class="form-label">Nom</label>
-                <input type="text" name="nom" class="form-control" required>
-            </div>
+                <div class="mb-3">
+                    <label class="form-label">Email</label>
+                    <input type="email" name="email" class="form-control" required>
+                </div>
 
-            <div class="mb-3">
-                <label class="form-label">Email</label>
-                <input type="email" name="email" class="form-control" required>
-            </div>
+                <div class="mb-3">
+                    <label class="form-label">Rôle</label>
+                    <select name="role" class="form-select" required>
+                        <option value="enseignant">Enseignant</option>
+                        <option value="responsable">Responsable</option>
+                        <option value="chef">Chef</option>
+                    </select>
+                </div>
 
-            <div class="mb-3">
-                <label class="form-label">Rôle</label>
-                <select name="role" class="form-select" required>
-                    <option value="enseignant">Enseignant</option>
-                    <option value="responsable">Responsable</option>
-                    <option value="chef">Chef</option>
-                </select>
-            </div>
-
-            <div class="d-grid">
-                <button type="submit" class="btn btn-success">Envoyer l'invitation</button>
-            </div>
-        </form>
+                <div class="d-grid">
+                    <button type="submit" class="btn btn-success btn-lg w-100">Envoyer l'invitation</button>
+                </div>
+            </form>
+        </div>
     </div>
 </div>
+
 
 {% endblock %}

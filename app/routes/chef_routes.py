@@ -49,25 +49,6 @@ def supprimer_utilisateur(user_id):
     flash("Utilisateur supprimé avec succès.", "success")
     return redirect(url_for('chef.liste_utilisateurs'))
 
-@chef.route('/chef/assigner_cours', methods=['GET', 'POST'])
-@login_required
-def assigner_cours():
-    enseignants = User.query.filter_by(role='enseignant').all()
-    cours_disponibles = Cours.query.filter_by(enseignant_id=None).all()
-
-    if request.method == 'POST':
-        enseignant_id = request.form.get('enseignant_id')
-        cours_ids = request.form.getlist('cours_ids')
-
-        for cours_id in cours_ids:
-            cours = Cours.query.get(int(cours_id))
-            cours.enseignant_id = int(enseignant_id)
-
-        db.session.commit()
-        flash("Cours assignés avec succès.", "success")
-        return redirect(url_for('chef.dashboard'))
-
-    return render_template('chef/assigner_cours.html', enseignants=enseignants, cours=cours_disponibles)
 
 @chef.route('/chef/fiche_suivi_excel/<int:cours_id>')
 @login_required
@@ -118,6 +99,7 @@ def supprimer_invitation(invitation_id):
     flash("Invitation supprimée avec succès.", "success")
     return redirect(url_for('chef.liste_invitations'))
 
+
 @chef.route('/chef/creer_cours', methods=['GET', 'POST'])
 @login_required
 def creer_cours():
@@ -125,11 +107,27 @@ def creer_cours():
 
     if request.method == 'POST':
         nom = request.form['nom']
-        volume_horaire = float(request.form['volume_horaire'])
-        coefficient = float(request.form['coefficient'])
+        volume_horaire = int(request.form['volume_horaire'])
+        coefficient = int(request.form['coefficient'])
         credits = int(request.form['credits'])
-        enseignant_id = request.form.get('enseignant_id') or None
+        enseignant_id = request.form.get('enseignant_id')
 
+        # Vérification des bornes
+        if coefficient < 1 or coefficient > 10:
+            flash("Le coefficient doit être compris entre 1 et 10.", "danger")
+            return redirect(url_for('chef.creer_cours'))
+
+        if volume_horaire < 2 or volume_horaire > 50 or volume_horaire % 2 != 0:
+            flash("Le Volume Horaire Total doit être un nombre pair entre 2 et 50.", "danger")
+            return redirect(url_for('chef.creer_cours'))
+
+        # Vérification unicité du nom de cours
+        existing_cours = Cours.query.filter_by(nom=nom).first()
+        if existing_cours:
+            flash("Un cours avec ce nom existe déjà.", "danger")
+            return redirect(url_for('chef.creer_cours'))
+
+        # Création du cours
         nouveau_cours = Cours(
             nom=nom,
             volume_horaire=volume_horaire,
@@ -140,6 +138,7 @@ def creer_cours():
 
         db.session.add(nouveau_cours)
         db.session.commit()
+
         flash("Cours créé et assigné avec succès.", "success")
         return redirect(url_for('chef.dashboard'))
 

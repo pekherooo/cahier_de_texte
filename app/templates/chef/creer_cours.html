@@ -2,8 +2,8 @@
 {% block title %}Créer un cours{% endblock %}
 {% block content %}
 
-<div class="container">
-    <h2 class="mb-4 text-center">Création de cours</h2>
+<div class="container mt-5 px-3">
+    <h2 class="mb-4 text-center">Créer un cours et l'assigner</h2>
 
     <form method="POST">
         <div class="mb-3">
@@ -12,14 +12,16 @@
         </div>
 
         <div class="mb-3">
-            <label class="form-label">Volume horaire :</label>
-            <input type="number" step="0.1" name="volume_horaire" class="form-control" required>
+            <label class="form-label">Volume Horaire Total (VHT) :</label>
+            <input type="number" name="volume_horaire" class="form-control" min="2" max="50" step="2" required>
         </div>
+
 
         <div class="mb-3">
             <label class="form-label">Coefficient :</label>
-            <input type="number" step="0.1" name="coefficient" class="form-control" required>
+            <input type="number" step="1" name="coefficient" class="form-control" min="1" max="10" required>
         </div>
+
 
         <div class="mb-3">
             <label class="form-label">Nombre de crédits :</label>
@@ -27,17 +29,16 @@
         </div>
 
         <div class="mb-3">
-            <label class="form-label">Assigner à un enseignant (optionnel) :</label>
-            <select name="enseignant_id" class="form-select">
-                <option value="">-- Aucun --</option>
-                {% for e in enseignants %}
-                    <option value="{{ e.id }}">{{ e.nom }} ({{ e.email }})</option>
+            <label class="form-label">Assigner à un enseignant :</label>
+            <select name="enseignant_id" class="form-select" required>
+                {% for enseignant in enseignants %}
+                    <option value="{{ enseignant.id }}">{{ enseignant.nom }} ({{ enseignant.email }})</option>
                 {% endfor %}
             </select>
         </div>
 
         <div class="d-grid">
-            <button type="submit" class="btn btn-success">Créer le cours</button>
+            <button type="submit" class="btn btn-success btn-lg w-100 shadow">Créer et assigner</button>
         </div>
     </form>
 </div>

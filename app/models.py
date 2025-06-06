@@ -37,7 +37,7 @@ class Seance(db.Model):
 
 class Cours(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    nom = db.Column(db.String(100), nullable=False)
+    nom = db.Column(db.String(100), unique=True, nullable=False)  # Ajout du unique ici
     volume_horaire = db.Column(db.Float, nullable=False)
     coefficient = db.Column(db.Float, nullable=False)
     credits = db.Column(db.Integer, nullable=False)
