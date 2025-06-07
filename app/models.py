@@ -21,13 +21,12 @@ class Invitation(db.Model):
 
 class Seance(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    date = db.Column(db.Date, nullable=False)
-    heure_debut = db.Column(db.Time, nullable=False)
-    heure_fin = db.Column(db.Time, nullable=False)
+    date = db.Column(db.DateTime, default=datetime.utcnow)
     contenu = db.Column(db.Text, nullable=False)
+    duree = db.Column(db.Float, nullable=False)  # Nouvelle colonne durée
     validee = db.Column(db.Boolean, default=False)
+    cours_id = db.Column(db.Integer, db.ForeignKey('cours.id'))
 
-    cours_id = db.Column(db.Integer, db.ForeignKey('cours.id'), nullable=False)
 
     @property
     def duree(self):

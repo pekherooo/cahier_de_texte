@@ -5,7 +5,7 @@ from app.models import Cours, Seance
 from datetime import datetime, date, time
 from app.decorators import role_required
 enseignant = Blueprint('enseignant', __name__)
-
+from sqlalchemy import func
 
 @enseignant.route('/enseignant')
 @login_required
@@ -19,30 +19,25 @@ def dashboard():
 @login_required
 def cours_detail(cours_id):
     cours = Cours.query.get_or_404(cours_id)
+    seances = Seance.query.filter_by(cours_id=cours.id).order_by(Seance.date).all()
 
-    if cours.enseignant_id != current_user.id:
-        flash("Accès non autorisé à ce cours.", "danger")
-        return redirect(url_for('enseignant.dashboard'))
+    # Calcul du total d'heures réalisées
+    total_realise = db.session.query(func.sum(Seance.duree)).filter_by(cours_id=cours.id).scalar() or 0
 
     if request.method == 'POST':
-        contenu = request.form.get('contenu')
-        if contenu:
-            # par défaut on prend la date et l’heure de maintenant
-            now = datetime.now()
-            heure_debut = time(now.hour, now.minute)
-            heure_fin = time(now.hour + 1, now.minute)  # simulation sur 1h
-            seance = Seance(
-                cours_id=cours.id,
-                contenu=contenu,
-                date=now.date(),
-                heure_debut=heure_debut,
-                heure_fin=heure_fin
-            )
-            db.session.add(seance)
-            db.session.commit()
-            flash('Séance ajoutée avec succès.', 'success')
-            return redirect(url_for('enseignant.cours_detail', cours_id=cours_id))
+        contenu = request.form['contenu']
+        duree = float(request.form['duree'])
 
-    seances = Seance.query.filter_by(cours_id=cours.id).all()
-    return render_template('enseignant/cours_detail.html', cours=cours, seances=seances)
+        nouvelle_seance = Seance(
+            contenu=contenu,
+            duree=duree,
+            cours_id=cours.id
+        )
 
+        db.session.add(nouvelle_seance)
+        db.session.commit()
+
+        flash("Séance ajoutée avec succès.", "success")
+        return redirect(url_for('enseignant.cours_detail', cours_id=cours.id))
+
+    return render_template('enseignant/cours_detail.html', cours=cours, seances=seances, total_realise=total_realise)
