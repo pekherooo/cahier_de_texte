@@ -28,11 +28,6 @@ class Seance(db.Model):
     cours_id = db.Column(db.Integer, db.ForeignKey('cours.id'))
 
 
-    @property
-    def duree(self):
-        from datetime import datetime, date
-        return datetime.combine(date.min, self.heure_fin) - datetime.combine(date.min, self.heure_debut)
-
 
 class Cours(db.Model):
     id = db.Column(db.Integer, primary_key=True)
