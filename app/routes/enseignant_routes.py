@@ -22,7 +22,7 @@ def cours_detail(cours_id):
     seances = Seance.query.filter_by(cours_id=cours.id).order_by(Seance.date).all()
 
     # Calcul du total d'heures réalisées
-    total_realise = db.session.query(func.sum(Seance.duree)).filter_by(cours_id=cours.id).scalar() or 0
+    total_realise = db.session.query(func.sum(Seance.duree)).filter(Seance.cours_id == cours.id).scalar() or 0
 
     if request.method == 'POST':
         contenu = request.form['contenu']
