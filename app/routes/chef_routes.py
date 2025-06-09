@@ -3,7 +3,6 @@ from flask_login import login_required
 from app.models import Invitation, User, Cours, Seance
 from app.extensions import db
 from app.services.email_service import send_email
-from app.services.excel_service import generate_fiche_suivi
 from app.decorators import role_required
 from app.services.invitation_service import create_or_update_invitation
 
@@ -49,23 +48,6 @@ def supprimer_utilisateur(user_id):
     flash("Utilisateur supprimé avec succès.", "success")
     return redirect(url_for('chef.liste_utilisateurs'))
 
-
-@chef.route('/chef/fiche_suivi_excel/<int:cours_id>')
-@login_required
-def fiche_suivi_excel(cours_id):
-    cours = Cours.query.get_or_404(cours_id)
-    enseignant = cours.enseignant
-    seances = Seance.query.filter_by(cours_id=cours.id).order_by(Seance.date).all()
-
-    output = generate_fiche_suivi(cours, enseignant, seances)
-    nom_fichier = f"fiche_{cours.nom}_{enseignant.nom}.xlsx".replace(" ", "_")
-
-    return send_file(
-        output,
-        as_attachment=True,
-        download_name=nom_fichier,
-        mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
-    )
 
 @chef.route('/chef/suivi_enseignant', methods=['GET', 'POST'])
 @login_required
