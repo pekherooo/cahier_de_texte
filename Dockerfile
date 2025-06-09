@@ -1,12 +1,25 @@
-FROM python:3.10-slim
+# Image de base Debian pour pouvoir installer les dépendances de WeasyPrint
+FROM python:3.13-slim
 
+# Install packages système nécessaires à WeasyPrint
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    libpango1.0-0 \
+    libcairo2 \
+    libffi-dev \
+    libjpeg-dev \
+    libgdk-pixbuf2.0-0 \
+    libpq-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+# Créer le répertoire de travail
 WORKDIR /app
 
-COPY requirements.txt ./
-RUN pip install --no-cache-dir -r requirements.txt
-
+# Copier ton code
 COPY . .
 
-ENV FLASK_APP=wsgi.py
+# Installer les dépendances Python
+RUN pip install --no-cache-dir -r requirements.txt
 
-CMD ["gunicorn", "-w", "4", "-b", "0.0.0.0:5000", "wsgi:app"]
+# Point d'entrée WSGI
+CMD ["gunicorn", "-b", "0.0.0.0:5000", "wsgi:app"]
