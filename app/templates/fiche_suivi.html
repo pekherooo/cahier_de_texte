@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Fiche de Suivi Pédagogique</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 40px; }
+        .entete-logo { text-align: center; margin-bottom: 10px; }
+        .entete-text { text-align: center; font-weight: bold; font-size: 16px; line-height: 1.4; }
+        h1 { text-align: center; margin-bottom: 20px; text-transform: uppercase; }
+        .entete { margin-bottom: 30px; }
+        .entete p { margin: 5px 0; }
+        .table-container { margin-top: 30px; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { border: 1px solid #000; padding: 8px; text-align: center; }
+        .total { margin-top: 20px; font-weight: bold; }
+        .signatures { margin-top: 60px; display: flex; justify-content: space-between; }
+        .signature-box { width: 45%; text-align: center; }
+        .signature-line { margin-top: 60px; border-top: 1px solid #000; }
+        img { width: 100px; height: auto; }
+    </style>
+</head>
+<body>
+
+<div class="entete-logo">
+    <img src="data:image/jpg;base64,{{ logo_base64 }}" alt="Logo Université">
+</div>
+
+<div class="entete-text">
+    UNIVERSITE IBA DER THIAM DE THIES<br>
+    UNITE DE FORMATION ET DE RECHERCHE<br>
+    SCIENCES DE L'INGENIEUR<br>
+    DEPARTEMENT GENIE CIVIL
+</div>
+
+<h1>FICHE DE SUIVI PÉDAGOGIQUE</h1>
+
+<div class="entete">
+    <p><strong>Année académique :</strong> 2024-2025</p>
+    <p><strong>Enseignant :</strong> {{ enseignant.nom }} ({{ enseignant.email }})</p>
+    <p><strong>Cours :</strong> {{ cours.nom }}</p>
+    <p><strong>Volume Horaire Total (VHT) :</strong> {{ cours.volume_horaire }} heures</p>
+    <p><strong>Crédits :</strong> {{ cours.credits }} | <strong>Coefficient :</strong> {{ cours.coefficient }}</p>
+    <p><strong>Total réalisé :</strong> {{ total_realise }} heures</p>
+</div>
+
+<div class="table-container">
+    <table>
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Date</th>
+                <th>Contenu</th>
+                <th>Durée (h)</th>
+                <th>Validation</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for s in seances %}
+            <tr>
+                <td>{{ loop.index }}</td>
+                <td>{{ s.date.strftime("%Y-%m-%d") }}</td>
+                <td>{{ s.contenu }}</td>
+                <td>{{ s.duree }}</td>
+                <td>{{ 'Validée' if s.validee else 'Non validée' }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<div class="total">
+    Total d'heures effectuées : {{ total_realise }} / {{ cours.volume_horaire }} heures
+</div>
+
+<div class="signatures">
+    <div class="signature-box">
+        <p>Chef de Département</p>
+        <div class="signature-line"></div>
+    </div>
+    <div class="signature-box">
+        <p>Enseignant</p>
+        <div class="signature-line"></div>
+    </div>
+</div>
+
+</body>
+</html>
