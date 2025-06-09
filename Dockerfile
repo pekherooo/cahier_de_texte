@@ -1,7 +1,5 @@
-# Image de base Debian pour pouvoir installer les dépendances de WeasyPrint
-FROM python:3.13-slim
+FROM python:3.10-slim
 
-# Install packages système nécessaires à WeasyPrint
 RUN apt-get update && apt-get install -y \
     build-essential \
     libpango1.0-0 \
@@ -12,14 +10,17 @@ RUN apt-get update && apt-get install -y \
     libpq-dev \
     && rm -rf /var/lib/apt/lists/*
 
-# Créer le répertoire de travail
-WORKDIR /app
+# On définit le dossier de travail correctement (à adapter selon ton arborescence réelle)
+WORKDIR /cahier_de_texte_base
 
-# Copier ton code
+# On copie tout ton projet dans /app
 COPY . .
 
-# Installer les dépendances Python
+# Installation des dépendances
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Point d'entrée WSGI
+# Et là attention au point d’entrée WSGI
+# Vérifie bien où se trouve ton wsgi.py
+# Exemple si ton wsgi.py est à la racine : /app/wsgi.py
+
 CMD ["gunicorn", "-b", "0.0.0.0:5000", "wsgi:app"]
