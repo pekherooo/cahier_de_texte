@@ -5,7 +5,7 @@ from flask import render_template
 
 # Configuration explicite
 path_wkhtmltopdf = r"C:\Program Files\wkhtmltopdf\bin\wkhtmltopdf.exe"
-config = pdfkit.configuration(wkhtmltopdf=path_wkhtmltopdf)
+config = pdfkit.configuration(wkhtmltopdf="/usr/bin/wkhtmltopdf")
 
 def generate_fiche_pdf(cours, enseignant, seances, total_realise):
     logo_base64 = get_logo_base64()

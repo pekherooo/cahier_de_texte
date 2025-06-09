@@ -1,14 +1,10 @@
 FROM python:3.10-slim
 
+# Installer wkhtmltopdf
 RUN apt-get update && apt-get install -y \
-    build-essential \
-    libpango1.0-0 \
-    libcairo2 \
-    libffi-dev \
-    libjpeg-dev \
-    libgdk-pixbuf2.0-0 \
-    libpq-dev \
-    && rm -rf /var/lib/apt/lists/*
+    wkhtmltopdf \
+ && rm -rf /var/lib/apt/lists/*
+
 
 # On définit le dossier de travail correctement (à adapter selon ton arborescence réelle)
 WORKDIR /cahier_de_texte_base
