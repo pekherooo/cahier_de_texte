@@ -5,6 +5,11 @@ from app.extensions import db
 from app.services.email_service import send_email
 from app.decorators import role_required
 from app.services.invitation_service import create_or_update_invitation
+from app.services.pdf_service import generate_fiche_pdf
+from flask import send_file
+from io import BytesIO
+from sqlalchemy import func
+
 
 
 chef = Blueprint('chef', __name__)
@@ -54,17 +59,28 @@ def supprimer_utilisateur(user_id):
 def suivi_enseignant():
     enseignants = User.query.filter_by(role='enseignant').all()
     enseignant_id = request.form.get('enseignant_id') if request.method == 'POST' else None
+    cours_id = request.form.get('cours_id') if request.method == 'POST' else None
 
     cours = []
+    seances = []
+
     if enseignant_id:
         cours = Cours.query.filter_by(enseignant_id=enseignant_id).all()
+        if cours_id:
+            cours_selected = Cours.query.get(int(cours_id))
+            seances = Seance.query.filter_by(cours_id=cours_selected.id).order_by(Seance.date).all()
+        else:
+            cours_selected = None
+    else:
+        cours_selected = None
 
-    return render_template(
-        'chef/suivi_enseignant.html',
-        enseignants=enseignants,
-        cours=cours,
-        enseignant_id=enseignant_id
-    )
+    return render_template('chef/suivi_enseignant.html',
+                           enseignants=enseignants,
+                           cours=cours,
+                           enseignant_id=enseignant_id,
+                           cours_selected=cours_selected,
+                           seances=seances)
+
 
 @chef.route('/chef/invitations')
 @login_required
@@ -125,6 +141,27 @@ def creer_cours():
         return redirect(url_for('chef.dashboard'))
 
     return render_template('chef/creer_cours.html', enseignants=enseignants)
+
+
+
+
+@chef.route('/chef/fiche_suivi_pdf/<int:cours_id>')
+@login_required
+def fiche_suivi_pdf(cours_id):
+    cours = Cours.query.get_or_404(cours_id)
+    enseignant = cours.enseignant
+    seances = Seance.query.filter_by(cours_id=cours.id).order_by(Seance.date).all()
+
+    total_realise = db.session.query(func.sum(Seance.duree)).filter(Seance.cours_id == cours.id).scalar() or 0
+
+    pdf_bytes = generate_fiche_pdf(cours, enseignant, seances, total_realise)
+
+    return send_file(
+        BytesIO(pdf_bytes),
+        as_attachment=True,
+        download_name=f"fiche_suivi_{cours.nom}_{enseignant.nom}.pdf",
+        mimetype="application/pdf"
+    )
 
 
 @chef.route('/chef/dashboard')
