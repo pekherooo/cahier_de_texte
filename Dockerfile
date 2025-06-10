@@ -1,9 +1,7 @@
 FROM python:3.10-slim
 
 # Installer wkhtmltopdf
-RUN apt-get update && apt-get install -y \
-    wkhtmltopdf \
-
+RUN apt-get update && apt-get install -y wkhtmltopdf
 
 
 # On définit le dossier de travail correctement (à adapter selon ton arborescence réelle)
