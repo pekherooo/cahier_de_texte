@@ -1,16 +1,12 @@
 FROM python:3.10-slim
 
-# Installer wkhtmltopdf et dépendances
+# Installer juste les dépendances système de base (optionnel)
 RUN apt-get update && apt-get install -y \
-    wget \
-    gnupg \
-    fontconfig \
-    libxrender1 \
-    libxext6 \
-    libx11-6 \
-    && wget https://github.com/wkhtmltopdf/wkhtmltopdf/releases/download/0.12.6/wkhtmltopdf_0.12.6-1.buster_amd64.deb \
-    && apt install -y ./wkhtmltopdf_0.12.6-1.buster_amd64.deb \
-    && rm wkhtmltopdf_0.12.6-1.buster_amd64.deb
+    build-essential \
+    libffi-dev \
+    libjpeg-dev \
+    libpq-dev \
+    && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /cahier_de_texte_base
 

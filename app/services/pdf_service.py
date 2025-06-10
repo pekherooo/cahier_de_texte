@@ -1,19 +1,18 @@
-import os
-import platform
-import pdfkit
 from flask import render_template
+from xhtml2pdf import pisa
+from io import BytesIO
 import base64
-
-def get_wkhtmltopdf_path():
-    if platform.system() == "Windows":
-        return r"C:\Program Files\wkhtmltopdf\bin\wkhtmltopdf.exe"
-    else:
-        return "/usr/local/bin/wkhtmltopdf"
-
-config = pdfkit.configuration(wkhtmltopdf=get_wkhtmltopdf_path())
+import os
 
 def generate_fiche_pdf(cours, enseignant, seances, total_realise):
-    logo_base64 = get_logo_base64()
+    # ✅ Chemin correct vers le logo
+    logo_path = os.path.join("app", "static", "img", "logo.jpg")
+
+    # Encodage en base64
+    with open(logo_path, "rb") as image_file:
+        logo_base64 = base64.b64encode(image_file.read()).decode("utf-8")
+
+    # Rendu HTML avec le template fiche_suivi.html
     html = render_template(
         "fiche_suivi.html",
         cours=cours,
@@ -22,9 +21,12 @@ def generate_fiche_pdf(cours, enseignant, seances, total_realise):
         total_realise=total_realise,
         logo_base64=logo_base64
     )
-    return pdfkit.from_string(html, False, configuration=config)
 
-def get_logo_base64():
-    logo_path = os.path.join("app", "static", "img", "logo.jpg")
-    with open(logo_path, "rb") as img_file:
-        return base64.b64encode(img_file.read()).decode('utf-8')
+    # Conversion en PDF
+    result = BytesIO()
+    pisa_status = pisa.CreatePDF(src=html, dest=result, encoding='utf-8')
+
+    if pisa_status.err:
+        raise Exception("Erreur lors de la génération du PDF")
+
+    return result.getvalue()
