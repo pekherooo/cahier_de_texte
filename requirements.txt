@@ -8,4 +8,4 @@ python-dotenv
 openpyxl
 gunicorn
 Flask-Migrate
-pdfkit
+xhtml2pdf
