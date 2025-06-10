@@ -72,6 +72,13 @@
             </tbody>
         </table>
 
+        <div class="text-end mb-5">
+            <a href="{{ url_for('chef.visualisation_cours', cours_id=c.id) }}" class="btn btn-outline-info">
+                📊 Visualiser les graphiques
+            </a>
+        </div>
+
+
         <!-- Bouton de génération PDF -->
         <div class="text-end mt-3">
             <a href="{{ url_for('chef.fiche_suivi_pdf', cours_id=cours_selected.id) }}" class="btn btn-success">

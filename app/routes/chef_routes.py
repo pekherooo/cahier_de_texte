@@ -9,6 +9,7 @@ from app.services.pdf_service import generate_fiche_pdf
 from flask import send_file
 from io import BytesIO
 from sqlalchemy import func
+from app.services.graphiques import graphe_progression_par_cours, graphe_cumul_heures_par_semaine
 
 
 
@@ -163,6 +164,16 @@ def fiche_suivi_pdf(cours_id):
         mimetype="application/pdf"
     )
 
+@chef.route('/chef/visualisation/<int:cours_id>')
+@login_required
+def visualisation_cours(cours_id):
+    cours = Cours.query.get_or_404(cours_id)
+    seances = Seance.query.filter_by(cours_id=cours.id).order_by(Seance.date).all()
+
+    img1_base64 = graphe_progression_par_cours(cours, seances)
+    img2_base64 = graphe_cumul_heures_par_semaine(seances)
+
+    return render_template('chef/visualisation.html', cours=cours, img1_base64=img1_base64, img2_base64=img2_base64)
 
 @chef.route('/chef/dashboard')
 @login_required
