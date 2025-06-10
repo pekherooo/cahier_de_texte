@@ -9,3 +9,4 @@ openpyxl
 gunicorn
 Flask-Migrate
 xhtml2pdf
+matplotlib
