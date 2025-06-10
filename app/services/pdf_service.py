@@ -1,17 +1,16 @@
 import os
-import base64
-from flask import render_template
-import pdfkit
 import platform
+import pdfkit
+from flask import render_template
+import base64
 
-# Détection automatique du binaire wkhtmltopdf selon le système
-if platform.system() == "Windows":
-    path_wkhtmltopdf = r"C:\Program Files\wkhtmltopdf\bin\wkhtmltopdf.exe"
-else:
-    path_wkhtmltopdf = "/usr/local/bin/wkhtmltopdf"
+def get_wkhtmltopdf_path():
+    if platform.system() == "Windows":
+        return r"C:\Program Files\wkhtmltopdf\bin\wkhtmltopdf.exe"
+    else:
+        return "/usr/local/bin/wkhtmltopdf"
 
-# Configuration PDFKit
-config = pdfkit.configuration(wkhtmltopdf=path_wkhtmltopdf)
+config = pdfkit.configuration(wkhtmltopdf=get_wkhtmltopdf_path())
 
 def generate_fiche_pdf(cours, enseignant, seances, total_realise):
     logo_base64 = get_logo_base64()
@@ -23,8 +22,7 @@ def generate_fiche_pdf(cours, enseignant, seances, total_realise):
         total_realise=total_realise,
         logo_base64=logo_base64
     )
-    pdf_file = pdfkit.from_string(html, False, configuration=config)
-    return pdf_file
+    return pdfkit.from_string(html, False, configuration=config)
 
 def get_logo_base64():
     logo_path = os.path.join("app", "static", "img", "logo.jpg")
