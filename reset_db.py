@@ -1,18 +1,26 @@
-from app import create_app
-from app.extensions import db
+from app import create_app, db
+from app.models import User
+from werkzeug.security import generate_password_hash
 
-# Crée une app Flask via ton factory existante
 app = create_app()
 
 with app.app_context():
-    print("⚠ Attention : cette opération va supprimer toutes les données existantes de la base...")
-
-    # Drop toutes les tables existantes
+    # Réinitialiser la base
+    print("Suppression des tables...")
     db.drop_all()
-    print("✅ Toutes les tables supprimées.")
 
-    # Recrée toutes les tables à partir de tes modèles
+    print("Création des tables...")
     db.create_all()
-    print("✅ Les tables ont été recréées (base propre et vide).")
 
-    print("🎯 Base de données réinitialisée avec succès.")
+    # Créer un compte admin par défaut
+    print("Création de l'utilisateur admin...")
+    admin = User(
+        nom="admin",
+        email="admin@univ-thies.sn",
+        mot_de_passe=generate_password_hash("admin123"),
+        role="chef"  # ou "admin" si tu as ce rôle
+    )
+    db.session.add(admin)
+    db.session.commit()
+
+    print("✔️ Réinitialisation terminée. Admin : admin@univ-thies.sn / admin123")
